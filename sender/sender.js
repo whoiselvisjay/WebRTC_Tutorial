@@ -1,12 +1,13 @@
+// Connecting with the local host
 const webSocket = new WebSocket(
   'ws://127.0.0.1:3000'
 );
 
 webSocket.onmessage = (event) => {
-  handleSignalingData(JSON.parse(event.data));
+  handleSignallingData(JSON.parse(event.data));
 };
 
-function handleSignalingData(data) {
+function handleSignallingData(data) {
   switch (data.type) {
     case 'answer':
       peerConn.setRemoteDescription(data.answer);
@@ -17,7 +18,6 @@ function handleSignalingData(data) {
 }
 
 let username;
-
 function sendUsername() {
   username = document.getElementById(
     'username-input'
@@ -69,7 +69,8 @@ function startCall() {
           },
         ],
       };
-      peerconn = new RTCPeerConnection(
+
+      peerConn = new RTCPeerConnection(
         configuration
       );
       peerConn.addStream(localStream);
@@ -80,14 +81,13 @@ function startCall() {
         ).srcObject = e.stream;
       };
 
-      peerConn.onicecandidate = ((e) => {
+      peerConn.onicecandidate = (e) => {
         if (e.candidate == null) return;
-
         sendData({
           type: 'store_candidate',
           candidate: e.candidate,
         });
-      });
+      };
 
       createAndSendOffer();
     },
@@ -116,7 +116,6 @@ function createAndSendOffer() {
 let isAudio = true;
 function muteAudio() {
   isAudio = !isAudio;
-
   localStream.getAudioTracks()[0].enabled =
     isAudio;
 }
@@ -124,7 +123,6 @@ function muteAudio() {
 let isVideo = true;
 function muteVideo() {
   isVideo = !isVideo;
-
   localStream.getVideoTracks()[0].enabled =
     isVideo;
 }
